@@ -17,8 +17,6 @@ L'API expose les données de prix, les prédictions du modèle, la détection de
 - [Structure du projet](#structure-du-projet)
 - [Entraîner un nouveau modèle](#entraîner-un-nouveau-modèle)
 - [Tests](#tests)
-- [Intégration avec Quantia](#intégration-avec-quantia)
-- [Licence](#licence)
 
 ---
 
@@ -65,7 +63,7 @@ Changez de source avec une seule variable d'environnement : `DATA_SOURCE=binance
 ### Option A — Docker (recommandé)
 
 ```bash
-git clone <this-repo> quantia-ml-api
+git clone https://github.com/jobordeau/quantia-ml-api.git
 cd quantia-ml-api
 cp .env.example .env
 
@@ -264,30 +262,5 @@ pytest --cov=app
 ```
 
 Les tests utilisent une source de données de bougies synthétique (`tests/conftest.py`) afin qu'ils puissent s'exécuter hors ligne — pas de réseau, pas de GCP, pas de Binance.
-
----
-
-## Intégration avec Quantia
-
-L'application web Quantia .NET se connecte via `MlApi:BaseUrl`. Pour intégrer cette API à la pile technologique Quantia, ajoutez ce qui suit à son `docker-compose.yml` :
-
-```yaml
-services:
-  ml-api:
-    image: quantia-ml-api:latest        # ou via chemin de build : ../quantia-ml-api
-    ports: ["8000:8000"]
-    environment:
-      DATA_SOURCE: binance
-    networks: [quantia]
-
-  web:
-    environment:
-      MlApi__BaseUrl: http://ml-api:8000
-    depends_on:
-      ml-api:
-        condition: service_healthy
-```
-
-Un patch complet est fourni dans [`docs/integration-with-quantia.md`](./docs/integration-with-quantia.md).
 
 ---
