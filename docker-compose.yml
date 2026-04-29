@@ -1,0 +1,26 @@
+services:
+  ml-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: quantia-ml-api
+    restart: unless-stopped
+    ports:
+      - "${ML_API_PORT:-8000}:8000"
+    environment:
+      ENVIRONMENT: ${ENVIRONMENT:-development}
+      LOG_LEVEL: ${LOG_LEVEL:-INFO}
+      DATA_SOURCE: ${DATA_SOURCE:-binance}
+      BIGQUERY_PROJECT: ${BIGQUERY_PROJECT:-}
+      BIGQUERY_DATASET: ${BIGQUERY_DATASET:-}
+      BIGQUERY_TABLE: ${BIGQUERY_TABLE:-}
+      GOOGLE_APPLICATION_CREDENTIALS: ${GOOGLE_APPLICATION_CREDENTIALS:-}
+      DEFAULT_SYMBOL: ${DEFAULT_SYMBOL:-BTCUSDT}
+    volumes:
+      - ./artifacts:/app/artifacts
+    healthcheck:
+      test: ["CMD", "curl", "--fail", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 20s
